@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { chats } = require('./data/data');
 const userRouter = require('./routes/user.routes');
+const messageRouter = require('./routes/message.routes');
 const app = express();
 
 app.use(express.json());
@@ -16,7 +17,8 @@ app.use(cors({
     credentials: true
 }));
 
-app.use('/api', userRouter);
+app.use('/api/auth', userRouter);
+app.use('/api/message', messageRouter);
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
     console.log('Successfully connected to the DB');

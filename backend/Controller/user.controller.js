@@ -2,10 +2,10 @@ const bcrypt = require('bcrypt');
 const User = require('../model/user.model');
 const validateData = require('../utils/Validation');
 
-exports.registerUser = async (req, res) => {
+exports.registerController = async (req, res) => {
     try {
         validateData(req);
-        const { name, email, password, pic } = req.body;
+        const { name, email, password } = req.body;
 
         // TODO Checking user alreday exist or not
         const exists = await User.findOne({ email });
@@ -18,15 +18,15 @@ exports.registerUser = async (req, res) => {
         const hashPassword = bcrypt.hashSync(password, genSalt);
 
         // TODO Creating new User and saving it in the DB
-        const user = new User({ name, email, password: hashPassword, pic });
+        const user = new User({ name, email, password: hashPassword });
         await user.save();
-        return res.status(200).json({ message: 'New user added successfully' });
+        return res.status(200).json({ message: 'New user added successfully', user });
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
 }
 
-exports.loginUser = async (req, res) => {
+exports.loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -47,8 +47,18 @@ exports.loginUser = async (req, res) => {
         }
 
         const token = await existingUser.getJWT();
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: process.env.NODE_ENV == "devolopment" ? false : true,
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
         return res.status(200).send({ message: 'Login successful!', token: token });
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
+}
+
+exports.logoutController = (req, res) => {
+    
 }
