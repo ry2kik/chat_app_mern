@@ -1,8 +1,9 @@
-const bcrypt = require('bcrypt');
-const User = require('../model/user.model');
-const validateData = require('../utils/Validation');
+import bcrypt from 'bcrypt'
+import User from '../model/user.model.js'
+import validateData from '../utils/Validation.js'
+import { sendWelcomeEmail } from '../emails/emailHandlers.js'
 
-exports.registerController = async (req, res) => {
+export const registerController = async (req, res) => {
     try {
         validateData(req);
         const { name, email, password } = req.body;
@@ -20,13 +21,14 @@ exports.registerController = async (req, res) => {
         // TODO Creating new User and saving it in the DB
         const user = new User({ name, email, password: hashPassword });
         await user.save();
+        await sendWelcomeEmail(user.email, user.name, process.env.CLIENT_URL);
         return res.status(200).json({ message: 'New user added successfully', user });
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
 }
 
-exports.loginController = async (req, res) => {
+export const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -47,7 +49,7 @@ exports.loginController = async (req, res) => {
         }
 
         const token = await existingUser.getJWT();
-        res.cookie("token", token, {
+        res.cookieA("token", token, {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV == "devolopment" ? false : true,
@@ -59,6 +61,6 @@ exports.loginController = async (req, res) => {
     }
 }
 
-exports.logoutController = (req, res) => {
+export const logoutController = (req, res) => {
     
 }

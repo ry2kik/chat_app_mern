@@ -1,4 +1,4 @@
-const validator = require('validator');
+import validator from 'validator'
 
 const validateData = (req) => {
     const { name, email, password } = req.body;
@@ -13,4 +13,4 @@ const validateData = (req) => {
         throw new Error("Not a strong password");
 }
 
-module.exports = validateData;
+export default validateData;

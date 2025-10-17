@@ -1,12 +1,12 @@
-require('dotenv').config();
-const cors = require('cors');
-const express = require('express');
-const mongoose = require('mongoose');
-const { chats } = require('./data/data');
-const userRouter = require('./routes/user.routes');
-const messageRouter = require('./routes/message.routes');
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
+import mongoose from 'mongoose';
+import userRouter from './routes/user.routes.js'
+import messageRouter from './routes/message.routes.js'
 const app = express();
 
+dotenv.config({ path: './.env' })
 app.use(express.json());
 const port = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }))

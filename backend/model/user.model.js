@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken'
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -38,4 +38,4 @@ userSchema.methods.getJWT = async function() {
     return token;
 }
 
-module.exports = mongoose.model('chatuser', userSchema);
+export default mongoose.model('chatuser', userSchema);
