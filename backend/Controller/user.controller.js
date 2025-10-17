@@ -49,7 +49,7 @@ export const loginController = async (req, res) => {
         }
 
         const token = await existingUser.getJWT();
-        res.cookieA("token", token, {
+        res.cookie("token", token, {
             httpOnly: true,
             sameSite: "strict",
             secure: process.env.NODE_ENV == "devolopment" ? false : true,
@@ -62,5 +62,9 @@ export const loginController = async (req, res) => {
 }
 
 export const logoutController = (req, res) => {
-    
+    res.cookie("token", "", {
+        maxAge: 0
+    });
+
+    res.status(200).json("Logged out successfully");
 }
