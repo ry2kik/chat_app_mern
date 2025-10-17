@@ -2,12 +2,14 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import userRouter from './routes/user.routes.js'
 import messageRouter from './routes/message.routes.js'
 const app = express();
 
 dotenv.config({ path: './.env' })
 app.use(express.json());
+app.use(cookieParser());
 const port = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }))
 

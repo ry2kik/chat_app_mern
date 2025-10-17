@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import User from '../model/user.model.js'
 import validateData from '../utils/Validation.js'
+import cloudinary from '../utils/Cloudinary.js'
 import { sendWelcomeEmail } from '../emails/emailHandlers.js'
 
 export const registerController = async (req, res) => {
@@ -67,4 +68,24 @@ export const logoutController = (req, res) => {
     });
 
     res.status(200).json("Logged out successfully");
+}
+
+export const updateProfileController = async (req, res) => {
+    try {
+        const { pic } = req.body;
+        if (!pic)
+            return res.status(400).json({ message: "Profile pic is required" });
+
+        const { _id } = req.user;
+        const uploadResponse = await cloudinary.uploader.upload(pic);
+        const updateUser = await User.findByIdAndUpdate(
+            _id, 
+            { pic: uploadResponse.secure_url }, 
+            { new: true }
+        );
+
+        return res.status(200).json({ message: 'Your profile pic has been updated', updateUser });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
 }
